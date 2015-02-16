@@ -1,9 +1,9 @@
 Overview
 --------
 
-The skeleton of the demo web project for CS480.
+A modification of the demo web project for CS480.
 
-This project is designed to let you practice the different aspects of software engineering, such as version control, design, tests, build, deployment, and maintenance.
+This project is designed to gather web data about a theme park and extrapolate the business of each day.
 
 Environment Setup
 -----------------
