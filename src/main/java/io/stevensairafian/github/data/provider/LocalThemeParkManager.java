@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -21,6 +20,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.stevensairafian.github.util.ResourceResolver;
+import io.stevensairafian.github.data.*;
 
 public class LocalThemeParkManager implements ThemeParkManager{
 
@@ -39,40 +39,36 @@ public class LocalThemeParkManager implements ThemeParkManager{
 
 	                    // get page title
 	                    String hours = doc.select("a").first().text();
+	                    //hours are in format 10am - 6pm
+	                    //int openingHours  = Integer.parseInt(hours.substring(0, 4).replaceAll("\\D", ""));
+	                    //int closingHours = Integer.parseInt(hours.substring(hours.length() - 4, hours.length()).replace("\\D", ""));
 	                    System.out.println("hours : " + hours);
 
-	                    Set<Movie> titles = new HashSet<Movie>();
+	                    Set<Attraction> attractions = new HashSet<Attraction>();
 
-	                    // get all links
-	                    boolean isPriceReady  = false;
-	                    Elements links = doc.select("h2.a-size-medium.s-inline.s-access-title.a-text-normal");
-	                    List<String> imgUrls = new ArrayList<String>();
-	                    Elements imgs = doc.select("img");
-	                    for (Element img : imgs) {
-	                        if (img.attr("alt").equals("Product Details")) {
+	                    // get all table cells (the only tables on the page only hold elements of concern
+	                    Elements td = doc.select("td");
 
-	                            imgUrls.add(img.absUrl("src"));
-	                        }
-	                    }
-
-	                    int index = 0;
-	                    for (Element link : links) {
+	                    /*
+	                     * The site is set up such that td's are next to each other in form "attraction" "wait time"
+	                     * We may assume that it will always start with an atraction name, followed by a wait time. thus
+	                     * we may create attractions by grabbing the 0th element, setting it's wiat time to element 1
+	                     * and then grabbing element 2, setting its wait time to element 3 so on and so forth
+	                     */
+	                    Element link;
+	                    for (int i = 0; i < td.size(); i++) {
+	                    	link = td.get(i);
 	                        System.out.println("text : " + link.text());
-	                        Movie m = new Movie();
-	                        m.setName(link.text());
-	                        m.setImgUrl(imgUrls.get(index));
-	                        m.setProvider("Amazon Instance Video");
-	                        // set the price
-	                        Random randomGenerator = new Random();
-	                        m.setPrice(randomGenerator.nextInt(10) + 1);
-
-	                        titles.add(m);
-	                        index++;
+	                        Attraction a = new Attraction();
+	                        a.setName(link.text());
+	                        //get wait time (the next element. Note pre-increment is used
+	                        link = td.get(++i);
+	                        a.setWaitTime(link.text());
 	                    }
 
 	                    // save to the file
 	                    JSON.writeValue(ResourceResolver.getThemeParkFile(),
-	                            titles);
+	                            attractions);
 
 	                } catch (IOException e) {
 	                    e.printStackTrace();
@@ -87,8 +83,8 @@ public class LocalThemeParkManager implements ThemeParkManager{
 			 // load the movies from the file
 	        Set<ThemePark> parks = new HashSet<ThemePark>();
 	        try {
-	            parks = JSON.readValue(ResourceResolver.,
-	                    new TypeReference<Set<Movie>>() {});
+	            parks = JSON.readValue(ResourceResolver.getThemeParkFile(),
+	                    new TypeReference<Set<Attraction>>() {});
 	            System.out.println(parks);
 	        } catch (IOException e) {
 	            // TODO Auto-generated catch block

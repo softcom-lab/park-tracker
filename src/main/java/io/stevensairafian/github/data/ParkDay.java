@@ -6,7 +6,8 @@ import java.util.List;
 
 public class ParkDay {
 	private HashMap<String, Attraction> attractions = new HashMap<String, Attraction>();
-
+	private int hoursOperating;
+	
 	public HashMap<String, Attraction> getAttractions() {
 		return attractions;
 	}
