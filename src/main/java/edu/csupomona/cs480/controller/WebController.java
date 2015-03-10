@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import edu.csupomona.cs480.App;
-import edu.csupomona.cs480.data.Movie;
+import io.stevensairafian.github.data.ThemePark;
 import edu.csupomona.cs480.data.User;
-import edu.csupomona.cs480.data.provider.LocalMovieManager;
-import edu.csupomona.cs480.data.provider.MovieManager;
+import io.stevensairafian.github.data.provider.LocalThemeParkManager;
+import io.stevensairafian.github.data.provider.ThemeParkManager;
 import edu.csupomona.cs480.data.provider.UserManager;
 
 
@@ -40,7 +40,7 @@ public class WebController {
     @Autowired
     private UserManager userManager;
 
-    private MovieManager movieMananger = new LocalMovieManager();
+    private ThemeParkManager parkMananger = new LocalThemeParkManager();
     /**
      * This is a simple example of how the HTTP API works.
      * It returns a String "OK" in the HTTP response.
@@ -73,12 +73,13 @@ public class WebController {
         return user;
     }
     
-    @RequestMapping(value = "/movie/search/{keyword}", method = RequestMethod.GET)
-    ModelAndView searchMovies(@PathVariable("keyword") String keyword) {
-        List<Movie> res = movieMananger.searchMovies(keyword);
+    //currently useless as there is only one themepark
+    @RequestMapping(value = "/park/search/{keyword}", method = RequestMethod.GET)
+    ModelAndView searchParks(@PathVariable("keyword") String keyword) {
+        List<ThemePark> res = parkMananger.searchParks(keyword);
         System.out.println(res  + " " + res.size());
-        ModelAndView modelAndView = new ModelAndView("movie");
-        modelAndView.addObject("movies", res);
+        ModelAndView modelAndView = new ModelAndView("park");
+        modelAndView.addObject("parks", res);
         System.out.println("Search keyword " + keyword);
         return modelAndView;
     }
