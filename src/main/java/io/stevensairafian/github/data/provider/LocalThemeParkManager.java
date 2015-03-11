@@ -58,11 +58,12 @@ public class LocalThemeParkManager implements ThemeParkManager{
 	                    Element link;
 	                    for (int i = 0; i < td.size(); i++) {
 	                    	link = td.get(i);
-	                        System.out.println("text : " + link.text());
+	                        System.out.print("text : " + link.text());
 	                        Attraction a = new Attraction();
 	                        a.setName(link.text());
 	                        //get wait time (the next element. Note pre-increment is used
 	                        link = td.get(++i);
+	                        System.out.println( " " + link.text());
 	                        a.setWaitTime(link.text());
 	                    }
 
